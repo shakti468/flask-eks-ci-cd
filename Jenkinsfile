@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'git@github.com:YOURNAME/flask-eks-ci-cd.git'
+                git branch: 'main', url: 'git@github.com:shakti468/flask-eks-ci-cd.git'
             }
         }
 
@@ -65,3 +65,4 @@ pipeline {
         }
     }
 }
+
