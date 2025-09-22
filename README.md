@@ -109,3 +109,113 @@ docker run --rm -d -p 5000:5000 flask-eks-demo:local
 <img width="587" height="376" alt="image" src="https://github.com/user-attachments/assets/d925224c-fbac-4be4-a40d-820510b51f15" />
 
 ----
+
+# Step 2 — Terraform AWS Infra (ECR + EKS)
+
+## Folder structure
+```bash
+infra/
+├─ main.tf
+├─ variables.tf
+├─ outputs.tf
+└─ terraform.tfvars
+```
+
+
+## Setup
+
+1. Go into `infra/`:
+```bash
+cd infra
+```
+
+## Initialize Terraform:
+```bash
+terraform init
+```
+## Create terraform.tfvars with your values:
+```bash
+region        = "ap-south-1"
+default_vpc_id = "vpc-xxxxxxxx"
+subnet_ids    = ["subnet-aaaaaaa", "subnet-bbbbbbb"]
+ami_id        = "ami-0abcd1234efgh5678"
+key_pair_name = "my-ssh-key"
+```
+## Preview:
+```bash
+terraform plan -var-file="terraform.tfvars"
+```
+## Apply:
+```bash
+terraform apply -var-file="terraform.tfvars" -auto-approve
+```
+### Screenshots
+
+<img width="992" height="427" alt="image" src="https://github.com/user-attachments/assets/09e7813a-1e3b-4cdd-8c1d-54e63dbbc7f2" />
+
+-----
+
+### eks_cluster
+<img width="1637" height="835" alt="image" src="https://github.com/user-attachments/assets/e9e4d5b7-0b58-4af1-b1e4-106a0df7a24a" />
+
+----
+### ecr_repository
+
+<img width="1725" height="687" alt="image" src="https://github.com/user-attachments/assets/fadd9300-98f3-4357-8a3c-fe14f2b148e7" />
+
+----
+
+# Push Local Docker Image to AWS ECR
+
+## Prerequisites
+
+- AWS CLI v2 installed
+- Docker installed
+- An existing ECR repository (e.g., `flask-eks-demo`) in your AWS account
+- Correct AWS credentials configured
+
+---
+
+### Screenshot
+<img width="1918" height="706" alt="image" src="https://github.com/user-attachments/assets/fbe90392-cca8-44a7-a337-43dabf354781" />
+
+------
+
+# Step 3 — Kubernetes Setup for Flask App
+
+## Prerequisites
+- EKS cluster already created (Step 2)
+- Docker image pushed to ECR (will be automated in Jenkins in Step 4)
+
+## Configure kubectl
+```bash
+aws eks --region ap-south-1 update-kubeconfig --name flask-eks-cluster
+kubectl get nodes
+```
+
+## Kubernetes Manifests
+
+- Folder: k8s/
+
+- namespace.yaml → defines a namespace flask-app
+
+- deployment.yaml → deploys 2 replicas of Flask container from ECR
+
+- service.yaml → exposes the app using AWS LoadBalancer on port 80
+
+
+## Apply
+```bash
+kubectl apply -f namespace.yaml
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+```
+## Verify
+```bash
+kubectl get pods -n flask-app
+kubectl get svc -n flask-app
+```
+### Open in browser through external ip:
+<img width="1731" height="827" alt="image" src="https://github.com/user-attachments/assets/a4d6af2c-67e1-4881-bac7-5c7816704882" />
+
+------
