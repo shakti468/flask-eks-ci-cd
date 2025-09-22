@@ -408,7 +408,14 @@ http://a5e03fd4e84b54740b3e6ee311cfb1b6-105602902.ap-south-1.elb.amazonaws.com/
 <img width="1348" height="651" alt="image" src="https://github.com/user-attachments/assets/0932ad9a-2fcf-4080-9af3-8dfe09303aa4" />
 
 
+
 ----------
+
+
 
 ## Destroy Infrastructure
 
+<img width="945" height="482" alt="image" src="https://github.com/user-attachments/assets/163609d9-bdac-4f9b-8082-5c480b63a2e9" />
+
+
+-----------
